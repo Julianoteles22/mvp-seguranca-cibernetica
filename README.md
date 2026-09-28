@@ -109,6 +109,8 @@ não confirmou a hipótese.
 **Data da coleta:** 28/09/2026, 19:31–19:45 UTC · **Total:** 28 arquivos, 240,5 MB descompactados
 (35 MB como gravados) · **Tempo:** 485 s (dominado pelo limite de requisições do NVD).
 
+> Essa coleta foi feita localmente, para testar o pipeline. Dentro do Databricks a coleta foi **repetida no mesmo dia (28/09/2026, 21:51–21:55 UTC)**, com os mesmos volumes (28 arquivos, 240,5 MB, 42.432 registros do NVD); as tabelas e os resultados apresentados abaixo são dessa execução na nuvem.
+
 O escopo do NVD foi recortado de propósito: todas as CVEs do KEV (para P1, P2, P4 e P5) e **todas as
 CVEs publicadas em 2024** (a população de comparação das perguntas P3–P5). Baixar o NVD inteiro
 (> 300 mil CVEs) não acrescentaria nada às perguntas e multiplicaria por dez o tempo e o volume.
@@ -148,6 +150,10 @@ flowchart LR
   notebooks rodarem no Databricks e em Spark 4.0 local. Todo o pipeline foi **testado localmente de
   ponta a ponta antes da execução na nuvem** ([log](evidencias/execucao_local/log_pipeline.txt)).
 
+**Evidência — Job executado no Databricks.** As seis tarefas (`coleta`, `bronze`, `silver`, `gold`, `qualidade`, `analise`) concluíram com sucesso em **7 min 15 s**. A execução de 44 s marcada como cancelada é uma execução adicional interrompida manualmente; a execução válida é a de 7 min 15 s.
+
+![Job do pipeline executado no Databricks, com as seis tarefas concluídas](evidencias/databricks/01_job_execucao.png)
+
 ---
 
 ## 5. Coleta
@@ -165,6 +171,10 @@ Notebook [`01_coleta`](notebooks/01_coleta.py) · robô em [`scripts/coleta.py`]
   manifesto existe, não baixa de novo).
 * Se a computação serverless não tiver saída para a internet, o mesmo script roda localmente e a pasta
   é enviada ao Volume pela interface — o restante do pipeline não muda.
+
+**Evidência — dados persistidos na nuvem.** O Volume `workspace.ciber_bronze.landing` contém as pastas `kev`, `nvd`, `epss` e `cwe` (arquivos brutos) e o `_manifesto_coleta.json`:
+
+![Volume landing no Unity Catalog com os arquivos brutos](evidencias/databricks/02_volume_landing.png)
 
 ---
 
@@ -197,6 +207,18 @@ declarado, **domínio observado** (mínimo–máximo ou categorias encontradas),
 significado do nulo e **linhagem** (campo de origem + regra aplicada). Ele é gerado por
 [`scripts/gerar_catalogo.py`](scripts/gerar_catalogo.py) a partir das tabelas carregadas, para nunca
 ficar desatualizado em relação aos dados.
+
+**Evidências no Databricks.** Os três schemas e suas tabelas Delta no Unity Catalog (bronze: 5 tabelas · silver: 4 · gold: 8, entre elas a fato, as dimensões e as tabelas de qualidade):
+
+![Schemas ciber_bronze, ciber_silver e ciber_gold com suas tabelas](evidencias/databricks/03_schemas_tabelas.png)
+
+Amostra da tabela fato `fato_vulnerabilidade` (chaves substitutas das dimensões, inclusive o membro `-1`):
+
+![Amostra de dados da fato_vulnerabilidade](evidencias/databricks/04_fato_amostra.png)
+
+**Linhagem** da fato, gerada automaticamente pelo Unity Catalog: a tabela é alimentada pelas tabelas silver `kev`, `nvd_cve`, `epss` e `cwe`:
+
+![Grafo de linhagem da fato_vulnerabilidade](evidencias/databricks/05_linhagem.png)
 
 ---
 
@@ -269,6 +291,10 @@ pendentes do NIST, iniciado em 2024, deixou um quinto das CVEs daquele ano sem a
 42% das notas usadas vêm do emissor da CVE. Esses casos foram mantidos (excluí-los enviesaria a
 amostra para CVEs "mais importantes"), com a origem da nota registrada em `cvss_origem`.
 
+**Evidência — tabela `qualidade_regras` no Databricks** (16 verificações; a tabela acima resume as principais):
+
+![Tabela qualidade_regras gerada pelo notebook 05_qualidade](evidencias/databricks/06_qualidade_regras.png)
+
 ---
 
 ## 9. Solução do problema — respostas às perguntas
@@ -279,6 +305,10 @@ Notebook [`06_analise`](notebooks/06_analise.py) · consultas SQL equivalentes e
 ### 9.1 P1 — Concentração por fornecedor
 
 ![P1](evidencias/graficos/p1_concentracao_fornecedores.png)
+
+*Evidência — mesmo resultado na execução no Databricks (notebook `06_analise`):*
+
+![P1 no Databricks: fornecedores com mais vulnerabilidades exploradas e concentração por ano](evidencias/databricks/07_p1_fornecedores.png)
 
 | Ano de inclusão | Inclusões | Fornecedores distintos | % 5 maiores | % Microsoft | HHI |
 |---|---|---|---|---|---|
@@ -308,6 +338,10 @@ completo.
 ### 9.2 P2 — Tempo até a exploração
 
 ![P2](evidencias/graficos/p2_tempo_ate_exploracao.png)
+
+*Evidência — mesmo resultado na execução no Databricks (notebook `06_analise`):*
+
+![P2 no Databricks: tempo entre publicação e exploração](evidencias/databricks/08_p2_tempo_exploracao.png)
 
 | Ano de publicação | Exploradas | Mediana (dias) | Em até 7 dias | Em até 30 dias |
 |---|---|---|---|---|
@@ -339,6 +373,10 @@ histórico do EPSS de 01/01/2025). Depois, verificamos quais entraram no KEV ent
 coleta. Como o EPSS é anterior ao desfecho, não há vazamento de informação do futuro.
 
 ![P3](evidencias/graficos/p3_cvss_vs_epss.png)
+
+*Evidência — mesmo resultado na execução no Databricks (notebook `06_analise`):*
+
+![P3 no Databricks: cobertura versus esforço, CVSS e EPSS](evidencias/databricks/09_p3_cvss_vs_epss.png)
 
 | Política | CVEs a corrigir | Esforço | Cobertura | Eficiência |
 |---|---|---|---|---|
@@ -390,6 +428,10 @@ para ação imediata —, e o CVSS ordena o restante da fila. Acima de ambos, a 
 
 ![P4](evidencias/graficos/p4_cwe_ransomware.png)
 
+*Evidência — mesmo resultado na execução no Databricks (notebook `06_analise`):*
+
+![P4 no Databricks: classes de fraqueza e ransomware](evidencias/databricks/10_p4_cwe_ransomware.png)
+
 | CWE | Nome | Exploradas | % do KEV | % usadas por ransomware |
 |---|---|---|---|---|
 | CWE-787 | *Out-of-bounds Write* | 159 | 9,2% | 17,0% |
@@ -438,6 +480,10 @@ desserialização e autenticação em sistemas expostos à internet.
 
 ![P5](evidencias/graficos/p5_severidade.png)
 
+*Evidência — mesmo resultado na execução no Databricks (notebook `06_analise`):*
+
+![P5 no Databricks: distribuição por faixa de severidade](evidencias/databricks/11_p5_severidade.png)
+
 | Faixa CVSS | Exploradas (todas) | % | CVEs de 2024 | % | Taxa de exploração em 2024 |
 |---|---|---|---|---|---|
 | Baixa | 4 | 0,2% | 828 | 2,1% | 0,12% |
@@ -454,6 +500,10 @@ números absolutos, a maior parte do que é explorado está na faixa Alta. Inclu
 cobre 89% das exploradas — ao custo de tratar quase metade de todas as CVEs (P3: 48,5% de esforço).
 **Decisão:** um SLA por severidade precisa incluir a faixa Alta e ser **escalonado** por sinais de
 exploração (KEV, EPSS alto), em vez de depender apenas do corte em 9,0.
+
+**Evidência — tabela `resumo_respostas` no Databricks**, com os indicadores-chave de P1 a P5 (a mesma tabela é consultável no SQL Editor):
+
+![Tabela resumo_respostas gravada pelo notebook 06_analise](evidencias/databricks/12_resumo_respostas.png)
 
 ---
 
@@ -561,10 +611,20 @@ python scripts/gerar_catalogo.py         # atualiza catalogo/catalogo_de_dados.m
 * **Execução local completa** (teste antes da nuvem): [`log_coleta.txt`](evidencias/execucao_local/log_coleta.txt)
   e [`log_pipeline.txt`](evidencias/execucao_local/log_pipeline.txt) — coleta de 28 arquivos, carga de
   todas as tabelas, verificações de integridade e resultados de P1–P5.
-* **Execução na nuvem (Databricks):** capturas de tela em [`evidencias/databricks/`](evidencias/databricks/)
-  — Volume com os arquivos brutos, schemas e tabelas no Unity Catalog, execução do Job com as seis
-  tarefas, amostra da fato, grafo de **linhagem** gerado pelo Unity Catalog e resultados das consultas.
-  A lista completa está em [`evidencias/README.md`](evidencias/README.md).
+* **Execução na nuvem (Databricks):** 12 capturas de tela em [`evidencias/databricks/`](evidencias/databricks/), cada uma referenciada no ponto do texto que ela sustenta:
+
+| Captura | Comprova | Seção |
+|---|---|---|
+| `01_job_execucao` | Job com as 6 tarefas concluídas (7 min 15 s) | 4 |
+| `02_volume_landing` | Arquivos brutos e manifesto persistidos no Volume | 5 |
+| `03_schemas_tabelas` | Schemas e tabelas Delta no Unity Catalog | 6 |
+| `04_fato_amostra` | Dados da tabela fato | 6 |
+| `05_linhagem` | Grafo de linhagem (Unity Catalog) | 6 |
+| `06_qualidade_regras` | Verificações de qualidade | 8 |
+| `07_p1_fornecedores` … `11_p5_severidade` | Resultado de cada pergunta (P1 a P5) | 9.1–9.5 |
+| `12_resumo_respostas` | Indicadores-chave gravados em tabela | 9 |
+
+  As capturas foram recortadas para mostrar apenas a área do Databricks (a barra de endereço com o endereço do workspace foi mantida). Lista e instruções: [`evidencias/README.md`](evidencias/README.md).
 
 ---
 
