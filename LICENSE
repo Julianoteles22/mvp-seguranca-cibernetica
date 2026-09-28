@@ -1,0 +1,59 @@
+MIT License — código deste repositório
+
+Copyright (c) 2026 Juliano Teles Abrahao
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+===============================================================================
+REGISTRO DAS LICENÇAS DOS DADOS UTILIZADOS
+===============================================================================
+
+A licença MIT acima cobre apenas o código. Os dados brutos NÃO são versionados
+neste repositório (são baixados por scripts/coleta.py) e permanecem sob as
+condições de suas fontes:
+
+1. CISA — Known Exploited Vulnerabilities (KEV) Catalog
+   https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+   Licença: Creative Commons Zero 1.0 (CC0). Uso livre para qualquer fim legal.
+   O uso destes dados não implica endosso da CISA ou do DHS, nem autoriza o uso
+   de seus logotipos.
+
+2. NIST — National Vulnerability Database (NVD), API CVE 2.0
+   https://nvd.nist.gov/developers
+   Dados do governo dos EUA, de uso livre. Aviso exigido pelos termos de uso:
+   "This product uses data from the NVD API but is not endorsed or certified
+   by the NVD."
+
+3. FIRST — Exploit Prediction Scoring System (EPSS)
+   https://www.first.org/epss/
+   Publicado gratuitamente, sem necessidade de registro; atribuição solicitada.
+   Referência: Jacobs, J.; Romanosky, S.; Edwards, B.; Roytman, M.; Adjerid, I.
+   "Exploit Prediction Scoring System (EPSS)". Digital Threats: Research and
+   Practice, v. 2, n. 3, 2021.
+
+4. MITRE — Common Weakness Enumeration (CWE), visão 1000
+   https://cwe.mitre.org/
+   Copyright © 2006–2026, The MITRE Corporation. CWE and the CWE logo are
+   trademarks of The MITRE Corporation.
+   Termos de uso (reproduzidos conforme exigido): "The MITRE Corporation hereby
+   grants you a non-exclusive, royalty-free license to use CWE for research,
+   development, and commercial purposes. Any copy you make for such purposes is
+   authorized on the condition that you reproduce MITRE's copyright designation
+   and this license in any such copy."
+   https://cwe.mitre.org/about/termsofuse.html

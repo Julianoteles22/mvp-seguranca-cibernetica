@@ -1,0 +1,36 @@
+[19:31:37] Coletando KEV ...
+  KEV: 1728 vulnerabilidades, versão do catálogo 2026.09.27
+[19:31:37] Coletando EPSS ...
+  EPSS (atual): 380224 CVEs — #model_version:v2026.06.15,score_date:2026-09-28T12:03:10Z
+  EPSS (corte): 271765 CVEs — #model_version:v2023.03.01,score_date:2025-01-01T00:00:00+0000
+[19:31:41] Coletando CWE ...
+  CWE: arquivo 1000.csv (3,255,371 bytes)
+[19:31:44] Coletando NVD ...
+  NVD: CVEs presentes no catálogo KEV (parâmetro hasKev)
+    nvd_kev página 0: 1728 CVEs (índice 0/1728)
+  NVD: CVEs publicadas em 2024 (janelas de até 120 dias)
+    nvd_pub2024_0101 página 0: 2000 CVEs (índice 0/12553)
+    nvd_pub2024_0101 página 1: 2000 CVEs (índice 2000/12553)
+    nvd_pub2024_0101 página 2: 2000 CVEs (índice 4000/12553)
+    nvd_pub2024_0101 página 3: 2000 CVEs (índice 6000/12553)
+    nvd_pub2024_0101 página 4: 2000 CVEs (índice 8000/12553)
+    nvd_pub2024_0101 página 5: 2000 CVEs (índice 10000/12553)
+    nvd_pub2024_0101 página 6: 553 CVEs (índice 12000/12553)
+    nvd_pub2024_0430 página 0: 2000 CVEs (índice 0/14180)
+    nvd_pub2024_0430 página 1: 2000 CVEs (índice 2000/14180)
+    nvd_pub2024_0430 página 2: 2000 CVEs (índice 4000/14180)
+    nvd_pub2024_0430 página 3: 2000 CVEs (índice 6000/14180)
+    nvd_pub2024_0430 página 4: 2000 CVEs (índice 8000/14180)
+    nvd_pub2024_0430 página 5: 2000 CVEs (índice 10000/14180)
+    nvd_pub2024_0430 página 6: 2000 CVEs (índice 12000/14180)
+    nvd_pub2024_0430 página 7: 180 CVEs (índice 14000/14180)
+    nvd_pub2024_0828 página 0: 2000 CVEs (índice 0/13339)
+    nvd_pub2024_0828 página 1: 2000 CVEs (índice 2000/13339)
+    nvd_pub2024_0828 página 2: 2000 CVEs (índice 4000/13339)
+    nvd_pub2024_0828 página 3: 2000 CVEs (índice 6000/13339)
+    nvd_pub2024_0828 página 4: 2000 CVEs (índice 8000/13339)
+    nvd_pub2024_0828 página 5: 2000 CVEs (índice 10000/13339)
+    nvd_pub2024_0828 página 6: 1339 CVEs (índice 12000/13339)
+    nvd_pub2024_1226 página 0: 632 CVEs (índice 0/632)
+Coleta concluída: 28 arquivos, 240.5 MB, 485s
+EXIT=0

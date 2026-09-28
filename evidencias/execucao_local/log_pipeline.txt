@@ -1,0 +1,292 @@
+
+==========================================================================================
+▶ 01_coleta.py
+==========================================================================================
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Ambiente: local
+Destino dos arquivos brutos: dados/landing
+Manifesto encontrado — arquivos já coletados. Pulando o download.
+Coleta concluída em 2026-09-28T19:44:49+00:00 (UTC) — 28 arquivos, 240.5 MB
+      fonte  arquivos  megabytes  registros           coletado_em_utc
+   CISA KEV         1        1.8       1728 2026-09-28T19:31:37+00:00
+ FIRST EPSS         2        4.3     651989 2026-09-28T19:31:41+00:00
+  MITRE CWE         1        3.3        944 2026-09-28T19:44:49+00:00
+NVD API 2.0        24      231.1      42432 2026-09-28T19:39:35+00:00
+  ✔ bronze_manifesto_coleta: 28 linhas
+✔ 01_coleta.py concluído em 21.9s
+
+==========================================================================================
+▶ 02_bronze.py
+==========================================================================================
+  ✔ bronze_kev_vulnerabilidades: 1.728 linhas
+  ✔ bronze_nvd_cve: 42.432 linhas
+  ✔ bronze_epss_scores: 651.989 linhas
+  ✔ bronze_cwe_catalogo: 944 linhas
+      fonte  linhas_bronze  registros_manifesto
+   CISA KEV           1728                 1728
+ FIRST EPSS         651989               651989
+  MITRE CWE            944                  944
+NVD API 2.0          42432                42432
+✔ 02_bronze.py concluído em 28.9s
+
+==========================================================================================
+▶ 03_silver.py
+==========================================================================================
+Duplicatas removidas: 0
+  ✔ silver_kev: 1.728 linhas
+Candidatos de CVSS, em ordem de preferência: ['v3.1/NVD', 'v3.1/CNA', 'v3.0/NVD', 'v3.0/CNA', 'v4.0/NVD', 'v4.0/CNA', 'v2.0/NVD', 'v2.0/CNA']
+Registros bronze: 42.432 → CVEs únicas: 42.272
+  ✔ silver_nvd_cve: 42.272 linhas
+Linhas descartadas por R8: 0
+  ✔ silver_epss: 651.989 linhas
+  ✔ silver_cwe: 946 linhas
+✔ 03_silver.py concluído em 37.4s
+
+==========================================================================================
+▶ 04_gold.py
+==========================================================================================
+CVEs na base integrada: 41.521
+  ✔ gold_dim_severidade: 6 linhas
+  ✔ gold_dim_produto: 720 linhas
+  ✔ gold_dim_cwe: 959 linhas
+  ✔ gold_dim_data: 8.865 linhas
+  ✔ gold_fato_vulnerabilidade: 41.521 linhas
+               chave  orfas
+          sk_produto      0
+              sk_cwe      0
+       sk_severidade      0
+  sk_data_publicacao      0
+sk_data_inclusao_kev      0
+   sk_data_prazo_kev      0
+Integridade referencial e grão verificados.
+✔ 04_gold.py concluído em 61.7s
+
+==========================================================================================
+▶ 05_qualidade.py
+==========================================================================================
+Data da coleta (limite superior para datas): 2026-09-28
+  ✔ gold_qualidade_atributos: 40 linhas
+        tabela               atributo  pct_nulos  distintos                  minimo                  maximo  violacoes_dominio
+    silver.kev                 cve_id       0.00       1728                      13                      16                  0
+    silver.kev             fornecedor       0.00        283                       2                      32                  0
+    silver.kev                produto       0.00        690                       2                     179                  0
+    silver.kev   nome_vulnerabilidade       0.00       1380                      30                     161                  0
+    silver.kev      data_inclusao_kev       0.00        477              2021-11-03              2026-09-27                  0
+    silver.kev  data_prazo_remediacao       0.00        500              2021-11-17              2026-09-30                  0
+    silver.kev         uso_ransomware       0.00          2                    None                    None                  0
+    silver.kev        triagem_forense       0.00          2                    None                    None                  0
+    silver.kev               cwes_kev       0.00        256                    None                    None                  0
+    silver.kev              descricao       0.00       1640                      55                     821                  0
+    silver.kev         acao_requerida       0.00         46                      38                     520                  0
+    silver.kev        versao_catalogo       0.00          1                      10                      10                  0
+    silver.kev  prazo_remediacao_dias       0.00         17                       1                     184                  0
+silver.nvd_cve                 cve_id       0.00      42272                      13                      16                  0
+silver.nvd_cve        data_publicacao       0.00       1301              2002-06-25              2026-09-27                  0
+silver.nvd_cve ultima_modificacao_nvd       0.00      42190 2024-01-02 16:15:12.337 2026-09-28 13:17:25.027                  0
+silver.nvd_cve             status_nvd       0.00          5                       8                      19                  0
+silver.nvd_cve              fonte_cna       0.00        316                      11                      52                  0
+silver.nvd_cve             cvss_score       1.80         84                     0.0                    10.0                  0
+silver.nvd_cve            cvss_versao       1.80          3                       3                       3                  0
+silver.nvd_cve            cvss_origem       1.80          2                       3                       3                  0
+silver.nvd_cve             cvss_vetor       1.80       1205                      44                     178                  0
+silver.nvd_cve       faixa_severidade       0.00          6                       4                      13                  0
+silver.nvd_cve          cwe_principal       2.11        468                       6                      14                  0
+silver.nvd_cve               cwes_nvd       2.11       2290                    None                    None                  0
+silver.nvd_cve           descricao_en       0.00      39858                      25                    3998                  0
+silver.nvd_cve  data_inclusao_kev_nvd      95.91        477              2021-11-03              2026-09-27                  0
+silver.nvd_cve          no_escopo_kev       0.00          2                    None                    None                  0
+silver.nvd_cve         no_escopo_2024       0.00          2                    None                    None                  0
+   silver.epss                 cve_id       0.00     391757                      13                      16                  0
+   silver.epss                   epss       0.00      31152                  4.2E-4                 0.99999                  0
+   silver.epss              percentil       0.00     100001                     0.0                     1.0                  0
+   silver.epss        data_referencia       0.00          2              2025-01-01              2026-09-28                  0
+   silver.epss          versao_modelo       0.00          2                      11                      11                  0
+   silver.epss               snapshot       0.00          2                       5                       5                  0
+    silver.cwe                 cwe_id       0.00        946                       5                      14                  0
+    silver.cwe                   nome       0.00        946                       7                     121                  0
+    silver.cwe              abstracao       0.00          6                       4                      12                  0
+    silver.cwe                 status       0.21          3                       5                      10                  0
+    silver.cwe              descricao       0.21        944                      36                     505                  0
+  ✔ gold_qualidade_regras: 16 linhas
+    dimensao                                                                           verificacao  ocorrencias    base   pct                                                   afeta                                                                  tratamento
+   Unicidade                                                                 CVEs repetidas no KEV            0  1728.0  0.00                                                  Nenhum                 Deduplicação por cve_id (R10); nenhuma repetição encontrada
+   Unicidade                      Registros repetidos no NVD entre escopos de coleta (antes da R7)          160 42432.0  0.38        Dupla contagem de CVEs do KEV publicadas em 2024                          Consolidadas em uma linha com flags de escopo (R7)
+Conformidade                           Fornecedores/produtos do KEV com espaço nas pontas (bronze)           19  1728.0  1.10          P1: o mesmo fornecedor seria contado como dois                                                       trim() na Silver (R2)
+Consistência                                Prazo de remediação anterior à data de inclusão no KEV            0  1728.0  0.00                                               P2/prazos                                                          Nenhuma ocorrência
+Consistência                     Data de inclusão no KEV diverge entre CISA e NVD (cisaExploitAdd)            0  1728.0  0.00                                                      P2                                    A data oficial da CISA (KEV) é a adotada
+Consistência             CVEs da coorte 2024 cujo ano no identificador difere do ano de publicação         7585 40704.0 18.63                           P3/P4/P5: definição da coorte             A coorte é definida pela data de publicação no NVD, não pelo ID
+  Completude                                                       CVEs do KEV sem registro no NVD            0  1728.0  0.00 P2 e P5 dependem da data de publicação e do CVSS do NVD                                  Mantidas na fato via full outer join (R12)
+  Completude                                                     CVEs do KEV sem nenhuma nota CVSS            0  1728.0  0.00                                                      P5                                          Classificadas como 'Sem pontuação'
+  Completude                                   CVEs de 2024 (não rejeitadas) sem nenhuma nota CVSS            8 39953.0  0.02                          P3: fora da população avaliada                              Excluídas da população de P3 (R15) e relatadas
+  Completude                      CVEs de 2024 (não rejeitadas) sem EPSS no snapshot de 01/01/2025          497 39953.0  1.24                                                      P3                                          Excluídas da população de P3 (R15)
+  Completude                       CVEs do KEV sem CWE específica (nula ou código especial do NVD)          146  1728.0  8.45                                                      P4                                           Reportadas como categoria própria
+Conformidade                                CWE referenciada que não existe na visão 1000 da MITRE           12   958.0  1.25                                                      P4                                  Incluídas na dimensão com nome explicativo
+    Acurácia                           CVEs do KEV incluídas antes da publicação no NVD (dias < 0)           65  1728.0  3.76                                                      P2 Plausível (exploração conhecida antes da publicação); mantidas e discutidas
+    Acurácia                                           Notas CVSS fora de 0-10 ou EPSS fora de 0-1            0     NaN   NaN                                                  P3, P5                                                          Nenhuma ocorrência
+  Atualidade CVEs de 2024 ainda sem análise própria do NVD (Received/Awaiting/Undergoing/Deferred)         7774 39953.0 19.46                      P3/P5: CVSS vem do CNA, não do NVD                  Nota do CNA aceita como substituta (R4); origem registrada
+  Atualidade                                CVEs de 2024 cujo CVSS escolhido é do CNA (não do NVD)        16791 39945.0 42.04                                                   P3/P5                              Registrada em cvss_origem; limitação discutida
+                                    item                    valor
+                KEV — versão do catálogo               2026.09.27
+             KEV — inclusão mais recente               2026-09-27
+          NVD — modificação mais recente  2026-09-28 13:17:25.027
+EPSS atual — data de referência / modelo 2026-09-28 / v2026.06.15
+EPSS corte — data de referência / modelo 2025-01-01 / v2023.03.01
+Total de violações de domínio nas tabelas Silver (após tratamento): 0
+✔ 05_qualidade.py concluído em 60.2s
+
+==========================================================================================
+▶ 06_analise.py
+==========================================================================================
+Vulnerabilidades no KEV: 1728
+Top 10 fornecedores:
+ fornecedor  vulnerabilidades  pct_do_kev  com_ransomware
+ Microsoft               389        22.5             117
+     Cisco                99         5.7               7
+     Apple                94         5.4               0
+     Adobe                82         4.7              11
+    Google                75         4.3               0
+    Oracle                46         2.7              13
+    Apache                40         2.3               8
+    Ivanti                35         2.0              12
+     Linux                31         1.8               2
+  Fortinet                30         1.7              14
+
+Top 10 produtos:
+ fornecedor                          produto  vulnerabilidades
+ Microsoft                          Windows               174
+     Apple                Multiple Products                53
+    Google                      Chromium V8                41
+ Microsoft                Internet Explorer                36
+     Adobe                     Flash Player                33
+     Linux                           Kernel                31
+ Microsoft                           Office                29
+ Microsoft                           Win32k                25
+   Synacor Zimbra Collaboration Suite (ZCS)                17
+ Microsoft                  Exchange Server                17
+
+Concentração por ano de inclusão no KEV:
+  ano  inclusoes  fornecedores_distintos    hhi     lider pct_lider pct_top5 pct_microsoft
+2021        311                      73  913.0 Microsoft      26.7     48.9          26.7
+2022        555                      98 1144.0 Microsoft      29.7     57.1          29.7
+2023        187                      67  476.0 Microsoft      14.4     37.4          14.4
+2024        186                      64  572.0 Microsoft      19.4     38.2          19.4
+2025        245                      99  377.0 Microsoft      15.9     29.0          15.9
+2026        244                      94  414.0 Microsoft      16.0     32.8          16.0
+Os 5 maiores fornecedores respondem por 42,8% de todo o KEV; a Microsoft sozinha, por 22,5%.
+Participação dos 5 maiores nas inclusões do ano: 57,1% em 2022 → 32,8% em 2026 (HHI 1144 → 414).
+ ano_publicacao  exploradas  mediana_dias  ate_dia_0  ate_7_dias  ate_30_dias  pct_ate_7_dias  pct_ate_30_dias
+           2018          76        1410.0          0           0            0             0.0              0.0
+           2019         129         952.0          0           0            0             0.0              0.0
+           2020         146         573.0          0           0            0             0.0              0.0
+           2021         214         206.0          5           8           18             3.7              8.4
+           2022         131          24.0         39          51           68            38.9             51.9
+           2023         165           6.0         46          87          107            52.7             64.8
+           2024         160          11.0         40          78           95            48.8             59.4
+           2025         197           8.0         49          97          126            49.2             64.0
+           2026         172           4.0         49         101          135            58.7             78.5
+CVEs publicadas de 2022 a 2025 e exploradas: 653. Mediana de 10 dias entre a publicação e a inclusão no KEV.
+26,6% entraram no KEV no mesmo dia da publicação ou antes (dia-zero); 47,9% em até 7 dias; 60,6% em até 30 dias.
+Prazo mediano dado pela CISA para correção após a inclusão: 21 dias.
+População: 39.323 CVEs de 2024 · exploradas após 01/01/2025: 35 (taxa-base 0,09%)
+Das 160 CVEs de 2024 que entraram no KEV, 125 (78,1%) já estavam lá em 01/01/2025.
+O CVSS tem 84 valores distintos nesta população. Para escolher as 1% mais graves (393 CVEs), é preciso desempatar entre 3.850 CVEs com nota 9,8 — o CVSS não diferencia as vulnerabilidades dentro desse grupo.
+                                    politica  cves_a_corrigir  esforco  cobertura  eficiencia  exploradas_cobertas
+                    CVSS ≥ 9,0 (só críticas)             4840     12.3       42.9        0.31                 15.0
+               CVSS ≥ 7,0 (altas e críticas)            19057     48.5       85.7        0.16                 30.0
+                                 EPSS ≥ 0,10               45      0.1        2.9        2.22                  1.0
+                                 EPSS ≥ 0,01              208      0.5       11.4        1.92                  4.0
+EPSS: top 4.840 (mesmo esforço das críticas)             4840     12.3       28.6        0.21                 10.0
+
+Cobertura esperada com orçamento fixo:
+ esforco  cves_corrigidas cobertura_CVSS cobertura_EPSS
+   0,5%              196           0,0%          11,4%
+   1,0%              393           1,4%          17,1%
+   2,0%              786           4,9%          17,1%
+   5,0%             1966          15,4%          20,0%
+  10,0%             3932          32,9%          28,6%
+  20,0%             7864          45,3%          36,1%
+Mesmo esforço (4840 CVEs = 12,3% da população): CVSS ≥ 9 cobre 42,9% × EPSS cobre 28,6%.
+Diferença (EPSS − CVSS): −14,3 p.p.; IC 95% bootstrap [−31,0 p.p.; +4,0 p.p.]
+        cwe_id                                                                                       nome  exploradas  pct_do_kev  com_ransomware  pct_ransomware
+       CWE-787                                                                        Out-of-bounds Write         159         9.2              27            17.0
+NVD-CWE-noinfo                                   Informação insuficiente para classificar (código do NVD)         133         7.7              37            27.8
+        CWE-78 Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')         115         6.7              14            12.2
+       CWE-416                                                                             Use After Free         100         5.8              11            11.0
+        CWE-22             Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')          95         5.5              37            38.9
+        CWE-20                                                                  Improper Input Validation          74         4.3              14            18.9
+       CWE-502                                                          Deserialization of Untrusted Data          72         4.2              25            34.7
+        CWE-94                                  Improper Control of Generation of Code ('Code Injection')          71         4.1              15            21.1
+       CWE-119                    Improper Restriction of Operations within the Bounds of a Memory Buffer          55         3.2               6            10.9
+       CWE-287                                                                    Improper Authentication          46         2.7              18            39.1
+       CWE-306                                               Missing Authentication for Critical Function          41         2.4              13            31.7
+       CWE-843                              Access of Resource Using Incompatible Type ('Type Confusion')          40         2.3               1             2.5
+
+Taxa geral de ransomware no KEV: 20,9%; sem CWE específica: 8,4%
+
+CWEs com ≥ 300 CVEs em 2024 — fração explorada (taxa geral de 2024: 0,40%):
+ cwe_id                                                                                       nome  cves_2024  exploradas  pct_exploradas
+ CWE-78 Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')        740          12            1.62
+ CWE-77        Improper Neutralization of Special Elements used in a Command ('Command Injection')        440           6            1.36
+ CWE-22             Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')       1027          13            1.27
+ CWE-94                                  Improper Control of Generation of Code ('Code Injection')        571           7            1.23
+CWE-502                                                          Deserialization of Untrusted Data        408           5            1.23
+CWE-416                                                                             Use After Free       1112          10            0.90
+CWE-863                                                                    Incorrect Authorization        325           2            0.62
+CWE-787                                                                        Out-of-bounds Write       1913          11            0.58
+CWE-434                                            Unrestricted Upload of File with Dangerous Type        715           3            0.42
+CWE-918                                                         Server-Side Request Forgery (SSRF)        350           1            0.29
+CWE-200                                 Exposure of Sensitive Information to an Unauthorized Actor        367           1            0.27
+ CWE-89       Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')       2632           6            0.23
+CWE-125                                                                         Out-of-bounds Read       1099           1            0.09
+ CWE-79       Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')       7275           6            0.08
+CWE-352                                                          Cross-Site Request Forgery (CSRF)       1377           0            0.00
+CWE-120                     Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')        584           0            0.00
+CWE-862                                                                      Missing Authorization       1811           0            0.00
+CWE-121                                                                Stack-based Buffer Overflow        333           0            0.00
+CWE-401                                         Missing Release of Memory after Effective Lifetime        396           0            0.00
+CWE-476                                                                   NULL Pointer Dereference       1110           0            0.00
+ ordem         faixa  exploradas  cves_2024  exploradas_2024  pct_exploradas  pct_cves_2024  pct_exploradas_2024  taxa_exploracao_2024
+     0 Sem pontuação           0          8                0             0.0            0.0                  0.0                  0.00
+     1       Nenhuma           0          1                0             0.0            0.0                  0.0                  0.00
+     2         Baixa           4        828                1             0.2            2.1                  0.6                  0.12
+     3         Média         189      19635               14            10.9           49.1                  8.8                  0.07
+     4          Alta         913      14484               76            52.8           36.3                 47.5                  0.52
+     5       Crítica         622       4997               69            36.0           12.5                 43.1                  1.38
+
+Por versão do CVSS usada:
+ versao  exploradas  pct_criticas
+   3.1        1723          36.0
+   3.0           5          40.0
+64,0% das vulnerabilidades exploradas NÃO são críticas pelo CVSS — ficariam fora de uma política 'corrigir só as críticas'. Faixa mais comum entre as exploradas: Alta.
+  ✔ gold_resumo_respostas: 26 linhas
+pergunta                                            indicador                                  valor
+      P1                  % do KEV nos 5 maiores fornecedores                                  42,8%
+      P1                                     Fornecedor líder                        Microsoft (389)
+      P1                    % top-5 nas inclusões 2022 → 2026                          57,1% → 32,8%
+      P1                                      HHI 2022 → 2026                             1144 → 414
+      P2    Mediana de dias publicação → KEV (CVEs 2022-2025)                                     10
+      P2               % exploradas em até 7 dias (2022-2025)                                  47,9%
+      P2              % exploradas em até 30 dias (2022-2025)                                  60,6%
+      P2                   % dia-zero (inclusão ≤ publicação)                                  26,6%
+      P3           Exploradas de 2024 já no KEV em 01/01/2025                     125 de 160 (78,1%)
+      P3   População (CVEs 2024) / exploradas depois do corte                            39.323 / 35
+      P3                         Cobertura CVSS ≥ 9 (esforço)                          42,9% (12,3%)
+      P3                   Cobertura EPSS com o mesmo esforço                                  28,6%
+      P3                       Diferença EPSS − CVSS (IC 95%)     −14,3 p.p. [−31,0 p.p.; +4,0 p.p.]
+      P3           Empate do CVSS na lista das 1% mais graves 393 vagas para 3.850 CVEs com nota 9,8
+      P3             Cobertura com 1% de esforço: CVSS / EPSS                           1,4% / 17,1%
+      P3             Cobertura / esforço da política CVSS ≥ 7                          85,7% / 48,5%
+      P3          Cobertura / esforço da política EPSS ≥ 0,10                            2,9% / 0,1%
+      P4                            CWE mais frequente no KEV                    CWE-787 (159; 9,2%)
+      P4                 CWE (n≥20) com maior % de ransomware          CWE-59 (60,0% vs 20,9% geral)
+      P4 CWE com maior propensão à exploração em 2024 (n≥300)                         CWE-78 (1,62%)
+      P4               CWE-79 (XSS): CVEs 2024 / % exploradas                          7.275 / 0,08%
+      P5               % das exploradas fora da faixa Crítica                                  64,0%
+      P5                       % das exploradas na faixa Alta                                  52,8%
+      P5         Taxa de exploração das CVEs Críticas de 2024                                  1,38%
+      P5            Taxa de exploração das CVEs Altas de 2024                                  0,52%
+      P5           Taxa de exploração das CVEs Médias de 2024                                  0,07%
+✔ 06_analise.py concluído em 23.6s
+
+Pipeline local concluído: 6 notebooks em 234s

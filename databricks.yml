@@ -1,0 +1,40 @@
+# Opcional — implantação do pipeline como Job via Databricks Asset Bundles (CLI):
+#   databricks bundle deploy   &&   databricks bundle run pipeline_mvp_ciber
+# Quem não usa a CLI pode criar o mesmo Job pela interface (passo a passo no README).
+# Sem bloco de cluster: as tarefas rodam em computação serverless (a única da Free Edition).
+bundle:
+  name: mvp_seguranca_cibernetica
+
+resources:
+  jobs:
+    pipeline_mvp_ciber:
+      name: "MVP Segurança Cibernética — pipeline ETL"
+      tasks:
+        - task_key: coleta
+          notebook_task:
+            notebook_path: ./notebooks/01_coleta.py
+        - task_key: bronze
+          depends_on: [{ task_key: coleta }]
+          notebook_task:
+            notebook_path: ./notebooks/02_bronze.py
+        - task_key: silver
+          depends_on: [{ task_key: bronze }]
+          notebook_task:
+            notebook_path: ./notebooks/03_silver.py
+        - task_key: gold
+          depends_on: [{ task_key: silver }]
+          notebook_task:
+            notebook_path: ./notebooks/04_gold.py
+        - task_key: qualidade
+          depends_on: [{ task_key: gold }]
+          notebook_task:
+            notebook_path: ./notebooks/05_qualidade.py
+        - task_key: analise
+          depends_on: [{ task_key: qualidade }]
+          notebook_task:
+            notebook_path: ./notebooks/06_analise.py
+
+targets:
+  dev:
+    mode: development
+    default: true

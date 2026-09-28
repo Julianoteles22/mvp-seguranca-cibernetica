@@ -1,0 +1,17 @@
+# Dados brutos e tabelas locais: não versionados (volume grande; são reproduzíveis por scripts/coleta.py)
+dados/
+
+# Python / Spark local
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+spark-warehouse/
+metastore_db/
+derby.log
+
+# Bundle do Databricks
+.databricks/
+
+# Sistema
+.DS_Store
+Thumbs.db
